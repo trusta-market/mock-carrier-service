@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mock-carrier-service
+  labels:
+    app: mock-carrier-service
+spec:
+  type: ClusterIP
+  selector:
+    app: mock-carrier-service
+  ports:
+    - port: 80
+      targetPort: 8300
+      protocol: TCP
