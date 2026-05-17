@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mock-carrier-service
+  labels:
+    app: mock-carrier-service
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: mock-carrier-service
+  template:
+    metadata:
+      labels:
+        app: mock-carrier-service
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: mock-carrier-service
+          image: asia-northeast3-docker.pkg.dev/trusta-market-id/trusta-registry-services/mock-carrier-service:PLACEHOLDER
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          ports:
+            - containerPort: 8300
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "k8s"
+            # Kafka VM 셋업 후 ConfigMap 또는 env override
+            # - name: KAFKA_BOOTSTRAP_SERVERS
+            #   value: "kafka:9092"
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: 500m
+              memory: 768Mi
+          startupProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8300
+            failureThreshold: 30
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8300
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8300
+            periodSeconds: 5
