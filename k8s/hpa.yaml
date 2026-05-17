@@ -1,0 +1,22 @@
+# 외부 carrier 시뮬레이터 — order/delivery 의 외부 API 호출을 흉내. 부하 받으면 같이 scale.
+# CPU 70% 도달 시 자동 scale (max 3, 다른 biz service 보다 보수적).
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: mock-carrier-service
+  labels:
+    app: mock-carrier-service
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: mock-carrier-service
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
