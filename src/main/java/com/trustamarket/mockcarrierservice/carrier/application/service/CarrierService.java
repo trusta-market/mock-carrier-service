@@ -26,7 +26,7 @@ public class CarrierService implements HandleDeliveryRequestedUseCase {
         log.info("배송 요청 접수 → 대기열 추가: deliveryId={}, 대기 건수={}", deliveryId, pendingDeliveries.size());
     }
 
-    @Scheduled(fixedDelay = 30_000)
+    @Scheduled(fixedDelay = 5_000)
     public void processPendingDeliveries() {
         log.info("[배치] 스케줄러 실행 — 대기 건수: {}", pendingDeliveries.size());
 
