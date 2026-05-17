@@ -1,22 +1,24 @@
 # K8s 환경 전용 override (SPRING_PROFILES_ACTIVE=k8s 일 때만 로드).
 
+spring:
+  kafka:
+    # GKE namespace 'kafka' 의 StatefulSet 3 broker.
+    bootstrap-servers: kafka.kafka:9092
+
 server:
   port: 8300
 
-spring:
-  kafka:
-    bootstrap-servers: kafka.kafka:9092
-    consumer:
-      group-id: mock-carrier-group
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+# k8s 에선 INFO 가 default — DEBUG 는 cluster log 비용 + signal 묻힘. 필요 시 별도 조정.
+logging:
+  level:
+    com.trustamarket.mockcarrierservice: INFO
 
-# CarrierService @Scheduled(fixedDelayString) placeholder.
-# 로컬 default: 5000ms (application.yml 의 :5000 fallback).
-carrier:
-  scheduler:
-    fixed-delay: 5000
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health, info, prometheus
