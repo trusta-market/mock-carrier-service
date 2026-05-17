@@ -1,0 +1,22 @@
+# K8s 환경 전용 override (SPRING_PROFILES_ACTIVE=k8s 일 때만 로드).
+
+server:
+  port: 8300
+
+spring:
+  kafka:
+    bootstrap-servers: kafka.kafka:9092
+    consumer:
+      group-id: mock-carrier-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+# CarrierService @Scheduled(fixedDelayString) placeholder.
+# 로컬 default: 5000ms (application.yml 의 :5000 fallback).
+carrier:
+  scheduler:
+    fixed-delay: 5000
