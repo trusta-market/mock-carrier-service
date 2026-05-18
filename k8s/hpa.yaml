@@ -1,22 +1,23 @@
-# 외부 carrier 시뮬레이터 — order/delivery 의 외부 API 호출을 흉내. 부하 받으면 같이 scale.
-# CPU 70% 도달 시 자동 scale (max 3, 다른 biz service 보다 보수적).
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: mock-carrier-service
-  labels:
-    app: mock-carrier-service
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: mock-carrier-service
-  minReplicas: 1
-  maxReplicas: 3
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 70
+# HPA 비활성 (부하 측정 시 일관된 환경 위해 replicas 1 고정).
+# 활성화 시 아래 주석 풀고 workflow 의 'Apply HPA' step 도 같이 활성화.
+#
+# apiVersion: autoscaling/v2
+# kind: HorizontalPodAutoscaler
+# metadata:
+#   name: mock-carrier-service
+#   labels:
+#     app: mock-carrier-service
+# spec:
+#   scaleTargetRef:
+#     apiVersion: apps/v1
+#     kind: Deployment
+#     name: mock-carrier-service
+#   minReplicas: 1
+#   maxReplicas: 3
+#   metrics:
+#     - type: Resource
+#       resource:
+#         name: cpu
+#         target:
+#           type: Utilization
+#           averageUtilization: 70
