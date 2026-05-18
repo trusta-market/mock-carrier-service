@@ -2,19 +2,11 @@
 
 spring:
   kafka:
-    # GKE namespace 'kafka' 의 StatefulSet 3 broker.
     bootstrap-servers: kafka.kafka:9092
 
 server:
   port: 8300
-  # Tomcat — 다른 service 와 통일 셋. mock 은 외부 carrier 시뮬레이터로 HTTP traffic 받음 (실 부하 발생).
-  tomcat:
-    threads:
-      max: 800
-    accept-count: 300
-    max-connections: 20000
 
-# k8s 에선 INFO 가 default — DEBUG 는 cluster log 비용 + signal 묻힘. 필요 시 별도 조정.
 logging:
   level:
     com.trustamarket.mockcarrierservice: INFO
