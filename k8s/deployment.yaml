@@ -46,7 +46,7 @@ spec:
             - containerPort: 8300
           env:
             - name: SPRING_PROFILES_ACTIVE
-              value: "k8s"
+              value: "dev"
             # Kafka VM 셋업 후 ConfigMap 또는 env override
             # - name: KAFKA_BOOTSTRAP_SERVERS
             #   value: "kafka:9092"
